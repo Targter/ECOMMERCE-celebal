@@ -1,13 +1,9 @@
 import React from "react";
-import { FaYoutube, FaInstagram } from "react-icons/fa";
+import { FaYoutube, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const About = () => {
   const visitInstagram = () => {
-    window.open(
-      "https://instagram.com/meabhisingh",
-      "_blank",
-      "noopener,noreferrer"
-    );
+    window.open("https://instagram.com/", "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -28,13 +24,13 @@ const About = () => {
           {/* Founder Profile */}
           <div className="lg:w-1/2 bg-white rounded-lg shadow-lg p-8 flex flex-col items-center">
             <img
-              src="https://res.cloudinary.com/tripleayt/image/upload/v1631555947/products/jpyibarlaxawvcvqjv5b.png"
-              alt="Abhishek Singh, Founder"
+              src="Profile.png"
+              alt="Abhay Bansal, Founder"
               className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover shadow-md mb-4"
               loading="lazy"
             />
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Abhishek Singh
+              Abhay Bansal
             </h2>
             <p className="text-gray-600 text-center text-sm mb-4">
               Founder of our e-commerce platform, dedicated to teaching MERN
@@ -60,7 +56,7 @@ const About = () => {
               </h2>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Our platform is more than just an e-commerce site—it's a passion
-                project by Abhishek Singh to demonstrate the power of the MERN
+                project by Abhay Bansal to demonstrate the power of the MERN
                 Stack. Through our YouTube channel,{" "}
                 <strong>6 Pack Programmer</strong>, we aim to educate and
                 inspire developers worldwide while offering quality products to
@@ -74,15 +70,6 @@ const About = () => {
                 Connect With Us
               </h2>
               <div className="flex gap-4">
-                {/* <a
-                  href="https://www.youtube.com/channel/UCO7afj9AUo0zV69pqEYhcjw"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-red-500 transition-colors duration-200"
-                  aria-label="Visit our YouTube channel"
-                >
-                  <FaYoutube size={28} />
-                </a> */}
                 <a
                   href="https://instagram.com/_abhay__bansal_"
                   target="_blank"
@@ -91,6 +78,15 @@ const About = () => {
                   aria-label="Visit our Instagram profile"
                 >
                   <FaInstagram size={28} />
+                </a>
+                <a
+                  href="https://linkedin.com/in/bansalabhay"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-700 hover:text-red-500 transition-colors duration-200"
+                  aria-label="Visit our Instagram profile"
+                >
+                  <FaLinkedinIn size={28} />
                 </a>
               </div>
             </div>

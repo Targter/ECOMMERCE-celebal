@@ -205,11 +205,9 @@ const ProductReviews = () => {
   const navigate = useNavigate();
 
   const { error: deleteError, isDeleted } = useSelector(
-    (state) => state.review
+    (state) => state.product
   );
-  const { error, reviews, loading } = useSelector(
-    (state) => state.productReviews
-  );
+  const { error, reviews, loading } = useSelector((state) => state.product);
 
   const [productId, setProductId] = useState("");
 

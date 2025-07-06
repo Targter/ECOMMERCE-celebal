@@ -182,21 +182,21 @@ const Contact = () => {
                 <div className="flex items-center gap-3">
                   <FaEnvelope className="text-red-500" size={20} />
                   <a
-                    href="mailto:mymailforabhi@gmail.com"
+                    href="mailto:bansalabhay00@gmail.com"
                     className="text-gray-700 hover:text-red-500 transition-colors duration-200"
                     aria-label="Email us"
                   >
-                    mymailforabhi@gmail.com
+                    bansalabhay00@gmail.com
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <FaPhone className="text-red-500" size={20} />
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+917973446163"
                     className="text-gray-700 hover:text-red-500 transition-colors duration-200"
                     aria-label="Call us"
                   >
-                    +1 (234) 567-890
+                    +91 7973446163
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
