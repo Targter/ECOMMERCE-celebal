@@ -1,0 +1,483 @@
+// import React, { Fragment, useEffect, useState } from "react";
+// import "./newProduct.css";
+// import { useSelector, useDispatch } from "react-redux";
+// import { clearErrors, createProduct } from "../../actions/productAction";
+// // import { useAlert } from "react-alert";
+// // import { Button } from "@material-ui/core";
+// import MetaData from "../layout/MetaData";
+// // import AccountTreeIcon from "@material-ui/icons/AccountTree";
+// // import DescriptionIcon from "@material-ui/icons/Description";
+// // import StorageIcon from "@material-ui/icons/Storage";
+// // import SpellcheckIcon from "@material-ui/icons/Spellcheck";
+// // import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+// import SideBar from "./Sidebar";
+// import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
+
+// const NewProduct = ({ history }) => {
+//   const dispatch = useDispatch();
+//   // const alert = useAlert();
+
+//   const { loading, error, success } = useSelector((state) => state.newProduct);
+
+//   const [name, setName] = useState("");
+//   const [price, setPrice] = useState(0);
+//   const [description, setDescription] = useState("");
+//   const [category, setCategory] = useState("");
+//   const [Stock, setStock] = useState(0);
+//   const [images, setImages] = useState([]);
+//   const [imagesPreview, setImagesPreview] = useState([]);
+
+//   const categories = [
+//     "Laptop",
+//     "Footwear",
+//     "Bottom",
+//     "Tops",
+//     "Attire",
+//     "Camera",
+//     "SmartPhones",
+//   ];
+
+//   useEffect(() => {
+//     if (error) {
+//       // alert.error(error);
+//       dispatch(clearErrors());
+//     }
+
+//     if (success) {
+//       // alert.success("Product Created Successfully");
+//       history.push("/admin/dashboard");
+//       dispatch({ type: NEW_PRODUCT_RESET });
+//     }
+//   }, [dispatch, error, history, success]);
+
+//   const createProductSubmitHandler = (e) => {
+//     e.preventDefault();
+
+//     const myForm = new FormData();
+
+//     myForm.set("name", name);
+//     myForm.set("price", price);
+//     myForm.set("description", description);
+//     myForm.set("category", category);
+//     myForm.set("Stock", Stock);
+
+//     images.forEach((image) => {
+//       myForm.append("images", image);
+//     });
+//     dispatch(createProduct(myForm));
+//   };
+
+//   const createProductImagesChange = (e) => {
+//     const files = Array.from(e.target.files);
+
+//     setImages([]);
+//     setImagesPreview([]);
+
+//     files.forEach((file) => {
+//       const reader = new FileReader();
+
+//       reader.onload = () => {
+//         if (reader.readyState === 2) {
+//           setImagesPreview((old) => [...old, reader.result]);
+//           setImages((old) => [...old, reader.result]);
+//         }
+//       };
+
+//       reader.readAsDataURL(file);
+//     });
+//   };
+
+//   return (
+//     <Fragment>
+//       <MetaData title="Create Product" />
+//       <div className="dashboard">
+//         <SideBar />
+//         <div className="newProductContainer">
+//           <form
+//             className="createProductForm"
+//             encType="multipart/form-data"
+//             onSubmit={createProductSubmitHandler}
+//           >
+//             <h1>Create Product</h1>
+
+//             <div>
+//               {/* <SpellcheckIcon /> */}
+//               <input
+//                 type="text"
+//                 placeholder="Product Name"
+//                 required
+//                 value={name}
+//                 onChange={(e) => setName(e.target.value)}
+//               />
+//             </div>
+//             <div>
+//               {/* <AttachMoneyIcon /> */}
+//               <input
+//                 type="number"
+//                 placeholder="Price"
+//                 required
+//                 onChange={(e) => setPrice(e.target.value)}
+//               />
+//             </div>
+
+//             <div>
+//               {/* <DescriptionIcon /> */}
+
+//               <textarea
+//                 placeholder="Product Description"
+//                 value={description}
+//                 onChange={(e) => setDescription(e.target.value)}
+//                 cols="30"
+//                 rows="1"
+//               ></textarea>
+//             </div>
+
+//             <div>
+//               {/* <AccountTreeIcon /> */}
+//               <select onChange={(e) => setCategory(e.target.value)}>
+//                 <option value="">Choose Category</option>
+//                 {categories.map((cate) => (
+//                   <option key={cate} value={cate}>
+//                     {cate}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+
+//             <div>
+//               {/* <StorageIcon /> */}
+//               <input
+//                 type="number"
+//                 placeholder="Stock"
+//                 required
+//                 onChange={(e) => setStock(e.target.value)}
+//               />
+//             </div>
+
+//             <div id="createProductFormFile">
+//               <input
+//                 type="file"
+//                 name="avatar"
+//                 accept="image/*"
+//                 onChange={createProductImagesChange}
+//                 multiple
+//               />
+//             </div>
+
+//             <div id="createProductFormImage">
+//               {imagesPreview.map((image, index) => (
+//                 <img key={index} src={image} alt="Product Preview" />
+//               ))}
+//             </div>
+
+//             <button
+//               id="createProductBtn"
+//               type="submit"
+//               disabled={loading ? true : false}
+//             >
+//               Create
+//             </button>
+//           </form>
+//         </div>
+//       </div>
+//     </Fragment>
+//   );
+// };
+
+// export default NewProduct;
+
+//
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearErrors,
+  createProduct,
+} from "../../reducers/store/slice/productSlice";
+import MetaData from "../layout/MetaData";
+import SideBar from "./Sidebar";
+// import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
+import {
+  FiBox,
+  FiDollarSign,
+  FiFileText,
+  FiGrid,
+  FiDatabase,
+  FiImage,
+  FiPlus,
+} from "react-icons/fi";
+
+const NewProduct = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, success } = useSelector((state) => state.product);
+
+  const [productData, setProductData] = useState({
+    name: "",
+    price: 0,
+    description: "",
+    category: "",
+    Stock: 0,
+    images: [],
+    ratings: 0,
+    imagesPreview: [],
+    numOfReviews: 0,
+    reviews: [],
+  });
+
+  const categories = [
+    "Laptop",
+    "Footwear",
+    "Bottom",
+    "Tops",
+    "Attire",
+    "Camera",
+    "SmartPhones",
+  ];
+
+  useEffect(() => {
+    if (error) {
+      // Handle error (e.g., show toast notification)
+      dispatch(clearErrors());
+    }
+
+    if (success) {
+      // Handle success (e.g., show success toast)
+      navigate("/admin/dashboard");
+      // dispatch({ type: NEW_PRODUCT_RESET });
+    }
+  }, [dispatch, error, navigate, success]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProductData((prev) => ({
+      ...prev,
+      [name]: name === "price" || name === "Stock" ? Number(value) : value,
+    }));
+  };
+
+  const createProductSubmitHandler = (e) => {
+    e.preventDefault();
+
+    const myForm = new FormData();
+    console.log("prodict data price:", productData.price);
+    myForm.set("name", productData.name);
+    myForm.set("price", 34);
+    myForm.set("description", productData.description);
+    myForm.set("category", productData.category);
+    myForm.set("Stock", 345);
+    myForm.set("ratings", 45);
+    myForm.set("numOfReviews", 2);
+    myForm.set("reviews", JSON.stringify(productData.reviews));
+    // console.log("image:", image);
+    productData.images.forEach((image) => {
+      myForm.append("images", image.file);
+    });
+
+    const formDataObj = {};
+    myForm.forEach((value, key) => {
+      formDataObj[key] = value;
+    });
+    console.log("FormData contents:", formDataObj);
+
+    // console.log("Form Data Object:", formObject);
+
+    dispatch(createProduct(myForm));
+  };
+
+  const createProductImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    // setProductData((prev) => ({
+    //   ...prev,
+    //   images: [],
+    //   imagesPreview: [],
+    // }));
+
+    // files.forEach((file) => {
+    //   const reader = new FileReader();
+
+    //   reader.onload = () => {
+    //     if (reader.readyState === 2) {
+    //       setProductData((prev) => ({
+    //         ...prev,
+    //         imagesPreview: [...prev.imagesPreview, reader.result],
+    //         images: [...prev.images, reader.result],
+    //       }));
+    //     }
+    //   };
+
+    //   reader.readAsDataURL(file);
+    // });
+    const mockImages = files.map((file, index) => {
+      return {
+        public_id: `mock_public_id_${index}`,
+        url: URL.createObjectURL(file), // temporary preview URL (no actual upload)
+      };
+    });
+    console.log("mocKImages:", mockImages);
+    setProductData((prev) => ({
+      ...prev,
+      images: mockImages,
+    }));
+  };
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <MetaData title="Create Product" />
+      <SideBar />
+
+      <div className="flex-1 p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <FiPlus className="mr-2" /> Create Product
+          </h1>
+
+          <form onSubmit={createProductSubmitHandler} className="space-y-6">
+            {/* Product Name */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiBox className="mr-2" /> Product Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter product name"
+                required
+                value={productData.name}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            {/* Price */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiDollarSign className="mr-2" /> Price
+              </label>
+              <input
+                type="number"
+                name="price"
+                placeholder="Enter price"
+                required
+                min="0"
+                value={productData.price}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiFileText className="mr-2" /> Description
+              </label>
+              <textarea
+                name="description"
+                placeholder="Product description"
+                value={productData.description}
+                onChange={handleInputChange}
+                rows="3"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              ></textarea>
+            </div>
+
+            {/* Category */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiGrid className="mr-2" /> Category
+              </label>
+              <select
+                name="category"
+                value={productData.category}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select Category</option>
+                {categories.map((cate) => (
+                  <option key={cate} value={cate}>
+                    {cate}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Stock */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiDatabase className="mr-2" /> Stock
+              </label>
+              <input
+                type="number"
+                name="Stock"
+                placeholder="Available stock"
+                required
+                min="0"
+                value={productData.Stock}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div className="form-group">
+              <label className="flex items-center text-gray-700 mb-2">
+                <FiImage className="mr-2" /> Product Images
+              </label>
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <FiImage className="w-8 h-8 mb-3 text-gray-500" />
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, JPEG (MAX. 5MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    name="images"
+                    accept="image/*"
+                    onChange={createProductImagesChange}
+                    multiple
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Image Previews */}
+            {productData.imagesPreview.length > 0 && (
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                {productData.imagesPreview.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={image}
+                      alt="Product Preview"
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Creating..." : "Create Product"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NewProduct;
