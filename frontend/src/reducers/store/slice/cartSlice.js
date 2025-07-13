@@ -17,7 +17,7 @@ export const addItemsToCart = createAsyncThunk(
     try {
       // console.log("called add item to cart function", id);
       const { data } = await axios.get(
-        `http://localhost:3005/api/v1/product/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/product/${id}`,
         {
           withCredentials: true,
         }

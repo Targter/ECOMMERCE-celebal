@@ -22,7 +22,7 @@ export const createOrder = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        "http://localhost:3005/api/v1/order/new",
+        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/order/new",
         order,
         config
       );
@@ -40,7 +40,7 @@ export const myOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3005/api/v1/orders/me",
+        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/orders/me",
         {
           withCredentials: true,
         }
@@ -60,7 +60,7 @@ export const getAllOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3005/api/v1/admin/orders",
+        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/orders",
         {
           withCredentials: true,
         }
@@ -83,7 +83,7 @@ export const updateOrder = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `http://localhost:3005/api/v1/admin/order/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/order/${id}`,
         order,
         config
       );
@@ -103,7 +103,7 @@ export const deleteOrder = createAsyncThunk(
     try {
       console.log("delete order called... ", id);
       const { data } = await axios.delete(
-        `http://localhost:3005/api/v1/admin/order/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/order/${id}`,
         {
           withCredentials: true,
         }
@@ -122,7 +122,7 @@ export const getOrderDetails = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3005/api/v1/order/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/order/${id}`,
         {
           withCredentials: true,
         }

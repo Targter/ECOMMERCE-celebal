@@ -13,7 +13,7 @@ export const login = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `http://localhost:3005/api/v1/login`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/login`,
         { email, password },
         config
       );
@@ -34,7 +34,7 @@ export const register = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `http://localhost:3005/api/v1/register`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/register`,
         userData,
         config
       );
@@ -50,9 +50,12 @@ export const loadUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       console.log("this called..");
-      const { data } = await axios.get(`http://localhost:3005/api/v1/me`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/me`,
+        {
+          withCredentials: true,
+        }
+      );
 
       // console.log("response:", response);
       console.log(data.user);
@@ -67,9 +70,12 @@ export const logout = createAsyncThunk(
   "user/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.get(`http://localhost:3005/api/v1/logout`, {
-        withCredentials: true,
-      });
+      await axios.get(
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/logout`,
+        {
+          withCredentials: true,
+        }
+      );
       return null;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -86,7 +92,7 @@ export const updateProfile = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `http://localhost:3005/api/v1/me/update`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/me/update`,
         userData,
         config
       );
@@ -106,7 +112,7 @@ export const updatePassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `http://localhost:3005/api/v1/password/update`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/update`,
         passwords,
         config
       );
@@ -127,7 +133,7 @@ export const forgotPassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `http://localhost:3005/api/v1/password/forgot`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/forgot`,
         email,
         config
       );
@@ -147,7 +153,7 @@ export const resetPassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `http://localhost:3005/api/v1/password/reset/${token}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/reset/${token}`,
         passwords,
         config
       );
@@ -163,7 +169,7 @@ export const getAllUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3005/api/v1/admin/users`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/users`,
         {
           withCredentials: true,
         }
@@ -181,7 +187,7 @@ export const getUserDetails = createAsyncThunk(
     try {
       console.log("this called...to ge tthe user Id");
       const { data } = await axios.get(
-        `http://localhost:3005/api/v1/admin/user/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
         { withCredentials: true }
       );
       console.log("this the data of the user>... ", data);
@@ -201,7 +207,7 @@ export const updateUser = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `http://localhost:3005/api/v1/admin/user/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
         userData,
         config
       );
@@ -217,7 +223,7 @@ export const deleteUser = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:3005/api/v1/admin/user/${id}`,
+        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
         { withCredentials: true }
       );
       return data;

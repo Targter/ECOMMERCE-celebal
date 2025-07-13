@@ -46,7 +46,7 @@ const ConfirmOrder = () => {
     try {
       // Create Razorpay order
       const { data } = await axios.post(
-        "http://localhost:3005/api/v1/create-order",
+        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/create-order",
         {
           amount: totalPrice,
           cartItems: cartItems.map((item) => ({
@@ -93,7 +93,7 @@ const ConfirmOrder = () => {
             console.log("Request body for /verify-payment:", requestBody);
             try {
               const verification = await axios.post(
-                "http://localhost:3005/api/v1/verify-payment",
+                "https://ecommerce-celebal-z4l7.vercel.app/api/v1/verify-payment",
                 requestBody,
                 { withCredentials: true }
               );
