@@ -1,124 +1,5 @@
-// import React, { Fragment, useEffect } from "react";
-// import { useParams, Link } from "react-router-dom";
-// import { useSelector, useDispatch } from "react-redux";
-// import MetaData from "../layout/MetaData";
-// import Loader from "../layout/Loader/Loader";
-// // import { getOrderDetails, clearErrors } from "../../actions/orderAction";
-// import {
-//   getOrderDetails,
-//   clearErrors,
-// } from "../../reducers/store/slice/orderSlice";
-// import "./orderDetails.css";
 
-// const OrderDetails = () => {
-//   const { id } = useParams();
-//   const dispatch = useDispatch();
-//   const { order, error, loading } = useSelector((state) => state.orderDetails);
-
-//   useEffect(() => {
-//     if (error) {
-//       dispatch(clearErrors());
-//     }
-
-//     dispatch(getOrderDetails(id));
-//   }, [dispatch, error, id]);
-
-//   if (loading) return <Loader />;
-
-//   return (
-//     <Fragment>
-//       <MetaData title="Order Details" />
-//       <div className="orderDetailsPage">
-//         <div className="orderDetailsContainer">
-//           <h1>Order #{order?._id}</h1>
-
-//           <section className="order-section">
-//             <h2>Shipping Info</h2>
-//             <div className="orderDetailsContainerBox">
-//               <div className="detail-row">
-//                 <p>Name:</p>
-//                 <span>{order?.user?.name}</span>
-//               </div>
-//               <div className="detail-row">
-//                 <p>Phone:</p>
-//                 <span>{order?.shippingInfo?.phoneNo}</span>
-//               </div>
-//               <div className="detail-row">
-//                 <p>Address:</p>
-//                 <span>
-//                   {order?.shippingInfo &&
-//                     `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.state}, ${order.shippingInfo.pinCode}, ${order.shippingInfo.country}`}
-//                 </span>
-//               </div>
-//             </div>
-//           </section>
-
-//           <section className="order-section">
-//             <h2>Payment</h2>
-//             <div className="orderDetailsContainerBox">
-//               <div className="detail-row">
-//                 <p
-//                   className={
-//                     order?.paymentInfo?.status === "succeeded"
-//                       ? "greenColor"
-//                       : "redColor"
-//                   }
-//                 >
-//                   {order?.paymentInfo?.status === "succeeded"
-//                     ? "PAID"
-//                     : "NOT PAID"}
-//                 </p>
-//               </div>
-//               <div className="detail-row">
-//                 <p>Amount:</p>
-//                 <span>₹{order?.totalPrice?.toFixed(2)}</span>
-//               </div>
-//             </div>
-//           </section>
-
-//           <section className="order-section">
-//             <h2>Order Status</h2>
-//             <div className="orderDetailsContainerBox">
-//               <div className="detail-row">
-//                 <p
-//                   className={
-//                     order?.orderStatus === "Delivered"
-//                       ? "greenColor"
-//                       : "redColor"
-//                   }
-//                 >
-//                   {order?.orderStatus}
-//                 </p>
-//               </div>
-//             </div>
-//           </section>
-//         </div>
-
-//         <div className="orderDetailsCartItems">
-//           <h2>Order Items</h2>
-//           <div className="orderDetailsCartItemsContainer">
-//             {order?.orderItems?.map((item) => (
-//               <div key={item.product} className="cart-item">
-//                 <img src={`/i.png`} alt={item.name} />
-//                 <Link to={`/product/${item.product}`}>{item.name}</Link>
-//                 <span>
-//                   {item.quantity} × ₹{item.price} ={" "}
-//                   <b>₹{(item.price * item.quantity).toFixed(2)}</b>
-//                 </span>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </Fragment>
-//   );
-// };
-
-// export default OrderDetails;
-
-//
-
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -140,10 +21,10 @@ const OrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { order, error, loading } = useSelector((state) => state.orderDetails);
+  const { order, error, loading } = useSelector((state) => state.order);
   const { isAuthenticated } = useSelector((state) => state.user);
   const [errors, setErrors] = useState({});
-
+  console.log("order:", order);
   useEffect(() => {
     if (isAuthenticated === false) {
       navigate("/login");
@@ -239,14 +120,15 @@ const OrderDetails = () => {
                     </h2>
                     <div className="space-y-3 text-sm text-gray-600">
                       <div className="flex gap-2">
+                        {console.log(order?.paymentInfo?.status)}
                         <p
                           className={`font-medium ${
-                            order.paymentInfo?.status === "succeeded"
+                            order.paymentInfo?.status === "Paid"
                               ? "text-green-600"
                               : "text-red-600"
                           }`}
                         >
-                          {order.paymentInfo?.status === "succeeded"
+                          {order.paymentInfo?.status === "Paid"
                             ? "PAID"
                             : "NOT PAID"}
                         </p>

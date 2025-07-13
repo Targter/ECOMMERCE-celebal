@@ -1,129 +1,16 @@
-// import React, { Fragment } from "react";
-// import CheckoutSteps from "./CheckoutSteps";
-// import { useSelector } from "react-redux";
-// import MetaData from "../layout/MetaData";
-// import "./ConfirmOrder.css";
-// import { Link, useNavigate } from "react-router-dom";
-// // import { div } from "@material-ui/core";
-
-// const ConfirmOrder = () => {
-//   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
-//   const { user } = useSelector((state) => state.user);
-//   const navigate = useNavigate();
-//   const subtotal = cartItems.reduce(
-//     (acc, item) => acc + item.quantity * item.price,
-//     0
-//   );
-
-//   const shippingCharges = subtotal > 1000 ? 0 : 200;
-
-//   const tax = subtotal * 0.18;
-
-//   const totalPrice = subtotal + tax + shippingCharges;
-
-//   const address = `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pinCode}, ${shippingInfo.country}`;
-
-//   const proceedToPayment = () => {
-//     const data = {
-//       subtotal,
-//       shippingCharges,
-//       tax,
-//       totalPrice,
-//     };
-
-//     sessionStorage.setItem("orderInfo", JSON.stringify(data));
-
-//     navigate("/process/payment");
-//   };
-
-//   return (
-//     <Fragment>
-//       <MetaData title="Confirm Order" />
-//       <CheckoutSteps activeStep={1} />
-//       <div className="confirmOrderPage">
-//         <div>
-//           <div className="confirmshippingArea">
-//             <div>Shipping Info</div>
-//             <div className="confirmshippingAreaBox">
-//               <div>
-//                 <p>Name:</p>
-//                 <span>{user.name}</span>
-//               </div>
-//               <div>
-//                 <p>Phone:</p>
-//                 <span>{shippingInfo.phoneNo}</span>
-//               </div>
-//               <div>
-//                 <p>Address:</p>
-//                 <span>{address}</span>
-//               </div>
-//             </div>
-//           </div>
-//           <div className="confirmCartItems">
-//             <div>Your Cart Items:</div>
-//             <div className="confirmCartItemsContainer">
-//               {cartItems &&
-//                 cartItems.map((item) => (
-//                   <div key={item.product}>
-//                     <img src={item.image} alt="Product" />
-//                     <Link to={`/product/${item.product}`}>
-//                       {item.name}
-//                     </Link>{" "}
-//                     <span>
-//                       {item.quantity} X ₹{item.price} ={" "}
-//                       <b>₹{item.price * item.quantity}</b>
-//                     </span>
-//                   </div>
-//                 ))}
-//             </div>
-//           </div>
-//         </div>
-//         {/*  */}
-//         <div>
-//           <div className="orderSummary">
-//             <div>Order Summery</div>
-//             <div>
-//               <div>
-//                 <p>Subtotal:</p>
-//                 <span>₹{subtotal}</span>
-//               </div>
-//               <div>
-//                 <p>Shipping Charges:</p>
-//                 <span>₹{shippingCharges}</span>
-//               </div>
-//               <div>
-//                 <p>GST:</p>
-//                 <span>₹{tax}</span>
-//               </div>
-//             </div>
-
-//             <div className="orderSummaryTotal">
-//               <p>
-//                 <b>Total:</b>
-//               </p>
-//               <span>₹{totalPrice}</span>
-//             </div>
-
-//             <button onClick={proceedToPayment}>Proceed To Payment</button>
-//           </div>
-//         </div>
-//       </div>
-//     </Fragment>
-//   );
-// };
-
-// export default ConfirmOrder;
-
-//
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 import MetaData from "../layout/MetaData";
 import CheckoutSteps from "./CheckoutSteps";
+import { clearCart } from "../../reducers/store/slice/cartSlice";
 
 const ConfirmOrder = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const subtotal = cartItems.reduce(
@@ -138,17 +25,120 @@ const ConfirmOrder = () => {
     ? `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.state}, ${shippingInfo.pinCode}, ${shippingInfo.country}`
     : "Address not provided";
 
-  const proceedToPayment = () => {
-    const data = { subtotal, shippingCharges, tax, totalPrice };
-    sessionStorage.setItem("orderInfo", JSON.stringify(data));
-    navigate("/process/payment");
+  const handlePayment = async (e) => {
+    e.preventDefault();
+
+    if (cartItems.length === 0) {
+      toast.error("Cart is empty");
+      return;
+    }
+
+    // Log order details to verify
+    console.log("Order details:", {
+      cartItems,
+      shippingInfo,
+      subtotal,
+      shippingCharges,
+      tax,
+      totalPrice,
+    });
+
+    try {
+      // Create Razorpay order
+      const { data } = await axios.post(
+        "http://localhost:3005/api/v1/create-order",
+        {
+          amount: totalPrice,
+          cartItems: cartItems.map((item) => ({
+            productId: item.product,
+            quantity: item.quantity,
+            price: item.price,
+            name: item.name,
+            image: item.image,
+          })),
+          shippingInfo,
+        },
+        { withCredentials: true }
+      );
+
+      if (data.success) {
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: data.order.amount,
+          currency: data.order.currency,
+          name: "ECOMMERCE",
+          description: `Order for ${cartItems.length} item(s)`,
+          order_id: data.order.id,
+          handler: async (response) => {
+            console.log("Razorpay response:", response);
+            const requestBody = {
+              paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+              orderDetails: {
+                cartItems: cartItems.map((item) => ({
+                  productId: item.product,
+                  quantity: item.quantity,
+                  price: item.price,
+                  name: item.name,
+                  image: item.image,
+                })),
+                shippingInfo,
+                subtotal,
+                shippingCharges,
+                tax,
+                totalPrice,
+              },
+            };
+            console.log("Request body for /verify-payment:", requestBody);
+            try {
+              const verification = await axios.post(
+                "http://localhost:3005/api/v1/verify-payment",
+                requestBody,
+                { withCredentials: true }
+              );
+
+              if (verification.data.success) {
+                toast.success("Order confirmed!");
+                dispatch(clearCart());
+                sessionStorage.removeItem("orderInfo");
+                navigate("/success");
+              } else {
+                toast.error("Payment verification failed");
+              }
+            } catch (error) {
+              toast.error("Error verifying payment");
+              console.error("Verification error:", error);
+            }
+          },
+          theme: { color: "#0d9488" },
+          prefill: {
+            name: user?.name || "Customer",
+            email: user?.email || "customer@example.com",
+            contact: user?.phone || "9999999999",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", (response) => {
+          toast.error(`Payment failed: ${response.error.description}`);
+        });
+        rzp.open();
+      } else {
+        toast.error(data.message || "Failed to create payment order");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Payment initialization failed"
+      );
+      console.error("Payment error:", error);
+    }
   };
 
   return (
     <Fragment>
       <MetaData title="Confirm Order | ECOMMERCE" />
-      <div className="mt-[90px]">
-        {" "}
+      <div className="">
         <CheckoutSteps activeStep={1} />
       </div>
       <div className="min-h-screen bg-gray-100 py-12">
@@ -157,9 +147,7 @@ const ConfirmOrder = () => {
             Confirm Your Order
           </h1>
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Shipping Info and Cart Items */}
             <div className="lg:w-2/3 space-y-6">
-              {/* Shipping Info */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Shipping Information
@@ -179,8 +167,6 @@ const ConfirmOrder = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Cart Items */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Your Cart Items
@@ -225,8 +211,6 @@ const ConfirmOrder = () => {
                 </div>
               </div>
             </div>
-
-            {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-lg p-6 sticky top-4">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -251,7 +235,7 @@ const ConfirmOrder = () => {
                   </div>
                 </div>
                 <button
-                  onClick={proceedToPayment}
+                  onClick={handlePayment}
                   className="w-full mt-6 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 flex items-center justify-center gap-2 text-sm font-medium"
                   aria-label="Proceed to payment"
                   disabled={cartItems.length === 0}

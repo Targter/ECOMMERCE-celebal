@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import "./Shipping.css";
 import { useSelector, useDispatch } from "react-redux";
 // import { saveShippingInfo } from "../../actions/cartAction";
 import { saveShippingInfo } from "../../reducers/store/slice/cartSlice";
@@ -74,121 +73,21 @@ const Shipping = () => {
     if (field === "country") setState(""); // Reset state when country changes
   };
   return (
-    // <Fragment>
-    //   <MetaData title="Shipping Details" />
-    //   <CheckoutSteps activeStep={0} />
-
-    //   <div className="shippingContainer">
-    //     <div className="shippingBox">
-    //       <h2 className="shippingHeading">Shipping Details</h2>
-
-    //       <form
-    //         className="shippingForm"
-    //         encType="multipart/form-data"
-    //         onSubmit={shippingSubmit}
-    //       >
-    //         <div className="form-group">
-    //           <FaHome className="input-icon" />
-    //           <input
-    //             type="text"
-    //             placeholder="Address"
-    //             required
-    //             value={address}
-    //             onChange={(e) => setAddress(e.target.value)}
-    //           />
-    //         </div>
-
-    //         <div className="form-group">
-    //           <FaCity className="input-icon" />
-    //           <input
-    //             type="text"
-    //             placeholder="City"
-    //             required
-    //             value={city}
-    //             onChange={(e) => setCity(e.target.value)}
-    //           />
-    //         </div>
-
-    //         <div className="form-group">
-    //           <FaMapMarkerAlt className="input-icon" />
-    //           <input
-    //             type="number"
-    //             placeholder="Pin Code"
-    //             required
-    //             value={pinCode}
-    //             onChange={(e) => setPinCode(e.target.value)}
-    //           />
-    //         </div>
-
-    //         <div className="form-group">
-    //           <FaPhone className="input-icon" />
-    //           <input
-    //             type="number"
-    //             placeholder="Phone Number"
-    //             required
-    //             value={phoneNo}
-    //             onChange={(e) => setPhoneNo(e.target.value)}
-    //             maxLength="10"
-    //             minLength="10"
-    //           />
-    //         </div>
-
-    //         <div className="form-group">
-    //           <FaGlobeAmericas className="input-icon" />
-    //           <select
-    //             required
-    //             value={country}
-    //             onChange={(e) => setCountry(e.target.value)}
-    //           >
-    //             <option value="">Country</option>
-    //             {Country.getAllCountries().map((item) => (
-    //               <option key={item.isoCode} value={item.isoCode}>
-    //                 {item.name}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-
-    //         {country && (
-    //           <div className="form-group">
-    //             <FaExchangeAlt className="input-icon" />
-    //             <select
-    //               required
-    //               value={state}
-    //               onChange={(e) => setState(e.target.value)}
-    //             >
-    //               <option value="">State</option>
-    //               {State.getStatesOfCountry(country).map((item) => (
-    //                 <option key={item.isoCode} value={item.isoCode}>
-    //                   {item.name}
-    //                 </option>
-    //               ))}
-    //             </select>
-    //           </div>
-    //         )}
-
-    //         <button type="submit" className="shippingBtn" disabled={!state}>
-    //           Continue
-    //         </button>
-    //       </form>
-    //     </div>
-    //   </div>
-    // </Fragment>
     <Fragment>
       <MetaData title="Shipping Details | ECOMMERCE" />
-      <div className="mt-[90px]">
+      <div className="">
         <CheckoutSteps activeStep={0} />
       </div>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12">
+      <div className=" h-auto bg-gray-100 flex  justify-center ">
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 animate-fade-in">
-          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 text-center ">
             Shipping Details
           </h2>
-          <p className="text-gray-600 text-sm text-center mb-6">
+          <p className="text-gray-600 text-sm text-center mb-2">
             Please provide your shipping information to proceed.
           </p>
 
-          <form onSubmit={shippingSubmit} className="space-y-6">
+          <form onSubmit={shippingSubmit} className="space-y-3">
             <div className="relative">
               <label
                 htmlFor="address"

@@ -54,7 +54,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 mt-[90px]">
+    <div className="min-h-screen bg-gray-100 py-12 ">
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <div className="text-center mb-12">

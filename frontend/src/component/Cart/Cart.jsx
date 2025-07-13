@@ -1,138 +1,41 @@
-// import React, { Fragment } from "react";
-// import "./Cart.css";
-// import CartItemCard from "./CartItemCard";
-// import { useSelector, useDispatch } from "react-redux";
-// // import { addItemsToCart, removeItemsFromCart } from "../../actions/cartAction";
-// import {
-//   addItemsToCart,
-//   removeItemsFromCart,
-// } from "../../reducers/store/slice/cartSlice";
-// import { FaShoppingCart } from "react-icons/fa";
-// import { Link } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
-// const Cart = () => {
-//   const dispatch = useDispatch();
-//   const { cartItems } = useSelector((state) => state.cart);
-//   const navigate = useNavigate();
-
-//   // increaseQuantity
-//   const increaseQuantity = (id, quantity, stock) => {
-//     const newQty = quantity + 1;
-//     // console.log("called");
-//     if (stock <= quantity) {
-//       return;
-//     }
-//     dispatch(addItemsToCart({ id: id, quantity: newQty }));
-//   };
-
-//   const decreaseQuantity = (id, quantity) => {
-//     // console.log("Decrease quantity called", id, quantity);
-//     const newQty = quantity - 1;
-//     if (1 >= quantity) {
-//       return;
-//     }
-//     dispatch(addItemsToCart({ id: id, quantity: newQty }));
-//   };
-
-//   const deleteCartItems = (id) => {
-//     dispatch(removeItemsFromCart(id));
-//   };
-
-//   const checkoutHandler = () => {
-//     navigate("/login?redirect=shipping");
-//   };
-
-//   const ab = (a, b) => {
-//     console.log("abcalled", a, b);
-//   };
-//   return (
-//     <Fragment>
-//       {cartItems.length === 0 ? (
-//         <div className="emptyCart">
-//           {/* <RemoveShoppingCartIcon /> */}
-//           <FaShoppingCart size={20} />
-//           <div>No Product in Your Cart</div>
-//           <Link to="/products">View Products</Link>
-//         </div>
-//       ) : (
-//         <Fragment>
-//           <div className="cartPage">
-//             <div className="cartHeader">
-//               <p>Product</p>
-//               <p>Quantity</p>
-//               <p>Subtotal</p>
-//             </div>
-
-//             {cartItems &&
-//               cartItems.map((item) => (
-//                 <div className="cartContainer" key={item.product}>
-//                   <CartItemCard item={item} deleteCartItems={deleteCartItems} />
-//                   <div className="cartInput">
-//                     <button
-//                       onClick={() => {
-//                         decreaseQuantity(item.product, item.quantity);
-//                       }}
-//                     >
-//                       -
-//                     </button>
-//                     <input type="number" value={item.quantity} readOnly />
-//                     <button
-//                       onClick={() =>
-//                         increaseQuantity(
-//                           item.product,
-//                           item.quantity,
-//                           item.stock
-//                         )
-//                       }
-//                     >
-//                       +
-//                     </button>
-//                   </div>
-//                   <p className="cartSubtotal">{`₹${
-//                     item.price * item.quantity
-//                   }`}</p>
-//                 </div>
-//               ))}
-
-//             <div className="cartGrossProfit">
-//               <div></div>
-//               <div className="cartGrossProfitBox">
-//                 <p>Gross Total</p>
-//                 <p>{`₹${cartItems.reduce(
-//                   (acc, item) => acc + item.quantity * item.price,
-//                   0
-//                 )}`}</p>
-//               </div>
-//               <div></div>
-//               <div className="checkOutBtn">
-//                 <button onClick={checkoutHandler}>Check Out</button>
-//               </div>
-//             </div>
-//           </div>
-//         </Fragment>
-//       )}
-//     </Fragment>
-//   );
-// };
-
-// export default Cart;
-
-//
-
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addItemsToCart,
   removeItemsFromCart,
 } from "../../reducers/store/slice/cartSlice";
-import { FaShoppingCart, FaTrash } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import CartItemCard from "./CartItemCard";
+import emptyCart from "../../assets/images/emptyCart.png"; // Adjust path as needed
+import Breadcrumbs from "../Breadcrumbs";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
+  const [totalAmt, setTotalAmt] = useState(0);
+  const [shippingCharge, setShippingCharge] = useState(0);
+
+  useEffect(() => {
+    const price = cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    setTotalAmt(price);
+  }, [cartItems]);
+  // console.log("cartItems:", cartItems.length);
+  useEffect(() => {
+    if (totalAmt <= 200) {
+      setShippingCharge(30);
+    } else if (totalAmt <= 400) {
+      setShippingCharge(25);
+    } else if (totalAmt > 400) {
+      setShippingCharge(20);
+    }
+  }, [totalAmt]);
 
   const increaseQuantity = (id, quantity, stock) => {
     if (stock <= quantity) {
@@ -158,169 +61,119 @@ const Cart = () => {
     navigate("/login?redirect=shipping");
   };
 
-  const cartTotal = cartItems.reduce(
-    (acc, item) => acc + item.quantity * item.price,
-    0
-  );
-
   return (
-    <Fragment>
+    <div className="max-w-7xl mx-auto px-4 py-4">
+      <Breadcrumbs title="Cart" />
       {cartItems.length === 0 ? (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-12 animate-fade-in mt-[90px]">
-          <div className="text-center">
-            <FaShoppingCart className="text-gray-400 mx-auto mb-4" size={48} />
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Your Cart is Empty
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Add some products to your cart and start shopping!
+        <motion.div
+          // initial={{ y: 30, opacity: 0 }}
+          // animate={{ y: 0, opacity: 1 }}
+          // transition={{ duration: 0.4 }}
+          className="flex flex-col md:flex-row justify-center items-center gap-4 pb-20"
+        >
+          <div>
+            <img
+              className="w-80 rounded-lg p-4 mx-auto"
+              src={emptyCart}
+              alt="Empty Cart"
+            />
+          </div>
+          <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
+            <h1 className="font-sans text-xl font-bold uppercase">
+              Your Cart feels lonely.
+            </h1>
+            <p className="text-sm text-center px-10 -mt-2">
+              Your Shopping cart lives to serve. Give it purpose - fill it with
+              books, electronics, videos, etc. and make it happy.
             </p>
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
-              aria-label="View products"
-            >
-              <FaShoppingCart size={16} />
-              View Products
+            <Link to="/shop">
+              <button className="bg-red-500 rounded-md cursor-pointer hover:bg-red-700 active:bg-red-900 px-8 py-2 font-sans font-semibold text-lg text-gray-200 hover:text-white transition-colors duration-300">
+                Continue Shopping
+              </button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <Fragment>
-          <div className="min-h-screen bg-gray-100 py-12 mt-[90px]">
-            <div className="container mx-auto px-4">
-              <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center animate-fade-in">
-                Your Cart
-              </h1>
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                {/* Cart Header */}
-                <div className="hidden md:grid grid-cols-6 gap-4 border-b border-gray-200 pb-4 mb-4">
-                  <p className="col-span-3 text-sm font-semibold text-gray-700">
-                    Product
-                  </p>
-                  <p className="col-span-1 text-sm font-semibold text-gray-700 text-center">
-                    Quantity
-                  </p>
-                  <p className="col-span-1 text-sm font-semibold text-gray-700 text-center">
+          <div className="pb-20">
+            <div className="w-full pt-2 pb-2 bg-gray-100 text-gray-800 hidden lg:grid grid-cols-5 place-content-center px-6 text-lg font-sans font-semibold">
+              <h2 className="col-span-2">Product</h2>
+              <h2>Price</h2>
+              <h2>Quantity</h2>
+              <h2>Sub Total</h2>
+            </div>
+            <div className="mt-2">
+              {cartItems.map((item) => (
+                <CartItemCard
+                  key={item.product}
+                  item={item}
+                  deleteCartItems={deleteCartItems}
+                  increaseQuantity={increaseQuantity}
+                  decreaseQuantity={decreaseQuantity}
+                />
+              ))}
+            </div>
+
+            {/* <button
+              onClick={resetCart}
+              className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 transition-colors duration-300"
+            >
+              Reset cart
+            </button> */}
+
+            {/* <div className="flex flex-col md:flex-row justify-between border py-4 px-4 items-center gap-2 md:gap-0">
+              <div className="flex items-center gap-4">
+                <input
+                  className="w-44 md:w-52 h-8 px-4 border text-gray-800 text-sm outline-none border-gray-400"
+                  type="text"
+                  placeholder="Coupon Number"
+                />
+                <p className="text-sm md:text-base font-semibold">
+                  Apply Coupon
+                </p>
+              </div>
+              <p className="text-lg font-semibold">Update Cart</p>
+            </div> */}
+
+            <div className="max-w-7xl gap-4 flex justify-end mt-4">
+              <div className="w-96 flex flex-col gap-4">
+                <h1 className="text-2xl font-semibold text-right">
+                  Cart totals
+                </h1>
+                <div>
+                  <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                     Subtotal
+                    <span className="font-semibold tracking-wide font-sans">
+                      ₹{totalAmt.toLocaleString()}
+                    </span>
                   </p>
-                  <p className="col-span-1 text-sm font-semibold text-gray-700 text-center">
-                    Remove
+                  <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
+                    Shipping Charge
+                    <span className="font-semibold tracking-wide font-sans">
+                      ₹{shippingCharge.toLocaleString()}
+                    </span>
+                  </p>
+                  <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-medium">
+                    Total
+                    <span className="font-bold tracking-wide text-lg font-sans">
+                      ₹{(totalAmt + shippingCharge).toLocaleString()}
+                    </span>
                   </p>
                 </div>
-
-                {/* Cart Items */}
-                {cartItems.map((item) => (
-                  <div
-                    key={item.product}
-                    className="grid grid-cols-1 md:grid-cols-6 gap-4 py-4 border-b border-gray-200 items-center"
+                <div className="flex justify-end">
+                  <button
+                    onClick={checkoutHandler}
+                    className="w-52 h-10 bg-red-500 text-white hover:bg-red-700 transition-colors duration-300"
                   >
-                    <div className="col-span-3">
-                      <CartItemCard
-                        item={item}
-                        deleteCartItems={deleteCartItems}
-                      />
-                    </div>
-                    <div className="col-span-1 flex items-center justify-center space-x-2">
-                      <button
-                        onClick={() =>
-                          decreaseQuantity(item.product, item.quantity)
-                        }
-                        disabled={item.quantity <= 1}
-                        className={`px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors duration-200 ${
-                          item.quantity <= 1
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
-                        aria-label={`Decrease quantity of ${item.name}`}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        readOnly
-                        className="w-12 text-center border rounded-md px-2 py-1 bg-gray-50"
-                        aria-label={`Quantity of ${item.name}`}
-                      />
-                      <button
-                        onClick={() =>
-                          increaseQuantity(
-                            item.product,
-                            item.quantity,
-                            item.stock
-                          )
-                        }
-                        disabled={item.quantity >= item.stock}
-                        className={`px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors duration-200 ${
-                          item.quantity >= item.stock
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
-                        aria-label={`Increase quantity of ${item.name}`}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <p className="col-span-1 text-sm font-medium text-gray-800 text-center">
-                      ₹{(item.price * item.quantity).toLocaleString()}
-                    </p>
-                    <div className="col-span-1 flex justify-center">
-                      <button
-                        onClick={() => deleteCartItems(item.product)}
-                        className="text-red-500 hover:text-red-600 transition-colors duration-200"
-                        aria-label={`Remove ${item.name} from cart`}
-                      >
-                        <FaTrash size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Cart Summary */}
-                <div className="mt-8">
-                  <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="w-full sm:w-1/2">
-                      <div className="bg-gray-50 rounded-md p-4">
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                          Cart Summary
-                        </h2>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <p className="text-gray-600">Subtotal</p>
-                            <p className="font-medium">
-                              ₹{cartTotal.toLocaleString()}
-                            </p>
-                          </div>
-                          <div className="flex justify-between">
-                            <p className="text-gray-600">Tax (5%)</p>
-                            <p className="font-medium">
-                              ₹{(cartTotal * 0.05).toLocaleString()}
-                            </p>
-                          </div>
-                          <div className="flex justify-between font-semibold text-gray-800">
-                            <p>Total</p>
-                            <p>₹{(cartTotal * 1.05).toLocaleString()}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={checkoutHandler}
-                      className="w-full sm:w-auto px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 flex items-center justify-center gap-2 text-sm font-medium"
-                      aria-label="Proceed to checkout"
-                    >
-                      <FaShoppingCart size={16} />
-                      Proceed to Checkout
-                    </button>
-                  </div>
+                    Proceed to Checkout
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </Fragment>
       )}
-    </Fragment>
+    </div>
   );
 };
 
