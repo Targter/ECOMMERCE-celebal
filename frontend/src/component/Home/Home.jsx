@@ -6,10 +6,6 @@ import {
 } from "../../reducers/store/slice/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader/Loader";
-import Headerr from "./HH/Header";
-import HeaderBottom from "./HH/HeaderBottom";
-import SpecialCase from "./HH/SpecialCase";
-// import Banner from "./HH/Banner";
 import Banner from "./HH/Banner";
 import BannerBottom from "./HH/BannerBottom";
 import Sale from "./HH/Sale";
@@ -44,8 +40,7 @@ const Home = () => {
       ) : (
         <>
           <MetaData title="ECOMMERCE" />
-         
-     
+
           {/* Banner Section */}
           <div className="w-full  mx-auto overflow-hidden">
             <Banner />

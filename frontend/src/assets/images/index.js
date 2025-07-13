@@ -30,7 +30,7 @@ import productOfTheYear from "./products/productOfTheYear.webp";
 // ============== Products End here ======================
 import paymentCard from "./payment.png";
 import emptyCart from "../images/emptyCart.png";
-
+import Imageee from "./products/i.png";
 export {
   logo,
   logoLight,
@@ -41,6 +41,7 @@ export {
   saleImgTwo,
   saleImgThree,
   LogoImageee,
+  Imageee,
   // ===================== Products start here ============
   // New Arrivals
   newArrOne,

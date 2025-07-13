@@ -6,9 +6,6 @@ import ProductDetails from "./component/Product/ProductDetails";
 import Products from "./component/Product/Products";
 import Search from "./component/Product/Search";
 import LoginSignUp from "./component/User/LoginSignUp";
-import { useDispatch } from "react-redux";
-import { loadUser } from "./reducers/store/slice/userSlice";
-import { useSelector } from "react-redux";
 import Profile from "./component/User/Profile";
 import ProtectedRoute from "./component/Route/ProtectedRoute";
 import UpdateProfile from "./component/User/UpdateProfile";
@@ -39,13 +36,6 @@ import HeaderBottom from "./component/Home/HH/HeaderBottom";
 import SpecialCase from "./component/Home/HH/SpecialCase";
 import FooterBottom from "./component/layout/Footer/FotterBottom";
 function App() {
-  const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.user);
-  console.log("key:", import.meta.env.VITE_RAZORPAY_KEY_ID);
-  useEffect(() => {
-    dispatch(loadUser());
-  }, []);
-
   return (
     <Router>
       <Header />

@@ -10,6 +10,7 @@ import Badge from "./Badge";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addItemsToCart } from "../../../../reducers/store/slice/cartSlice";
+import { Imageee } from "../../../../assets/images";
 
 const Product = (props) => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Product = (props) => {
     <div className="w-full relative group">
       <div className="max-w-80 max-h-80 relative overflow-y-hidden  ">
         <div>
-          <Image className="w-[80%] h-full" imgSrc={props.img} />
+          <Image className="w-[80%] h-full" imgSrc={Imageee} />
         </div>
         <div className="absolute top-6 left-8">
           {props.badge && <Badge text="New" />}
