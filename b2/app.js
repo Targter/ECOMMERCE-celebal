@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(fileUpload());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
+    origin: "https://buyme.abhaybansal.site", // Your frontend URL
     credentials: true, // Required for cookies
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
