@@ -13,7 +13,7 @@ export const login = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/login`,
+        `/api/v1/login`,
         { email, password },
         config
       );
@@ -33,11 +33,7 @@ export const register = createAsyncThunk(
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       };
-      const { data } = await axios.post(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/register`,
-        userData,
-        config
-      );
+      const { data } = await axios.post(`/api/v1/register`, userData, config);
       return data.user;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -50,12 +46,10 @@ export const loadUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       console.log("this called..");
-      const { data } = await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/me`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`/api/v1/me`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
 
       // console.log("response:", response);
       console.log(data.user);
@@ -70,12 +64,10 @@ export const logout = createAsyncThunk(
   "user/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/logout`,
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.get(`/api/v1/logout`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return null;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -91,11 +83,7 @@ export const updateProfile = createAsyncThunk(
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       };
-      const { data } = await axios.put(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/me/update`,
-        userData,
-        config
-      );
+      const { data } = await axios.put(`/api/v1/me/update`, userData, config);
       return data.success;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -112,7 +100,7 @@ export const updatePassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/update`,
+        `/api/v1/password/update`,
         passwords,
         config
       );
@@ -133,7 +121,7 @@ export const forgotPassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/forgot`,
+        `/api/v1/password/forgot`,
         email,
         config
       );
@@ -153,7 +141,7 @@ export const resetPassword = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/password/reset/${token}`,
+        `/api/v1/password/reset/${token}`,
         passwords,
         config
       );
@@ -168,12 +156,10 @@ export const getAllUsers = createAsyncThunk(
   "user/getAllUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/users`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`/api/v1/admin/users`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return data.users;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -186,10 +172,10 @@ export const getUserDetails = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       console.log("this called...to ge tthe user Id");
-      const { data } = await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
-        { withCredentials: true }
-      );
+      const { data } = await axios.get(`/api/v1/admin/user/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       console.log("this the data of the user>... ", data);
       return data.user;
     } catch (error) {
@@ -207,7 +193,7 @@ export const updateUser = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
+        `/api/v1/admin/user/${id}`,
         userData,
         config
       );
@@ -222,10 +208,10 @@ export const deleteUser = createAsyncThunk(
   "user/deleteUser",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/user/${id}`,
-        { withCredentials: true }
-      );
+      const { data } = await axios.delete(`/api/v1/admin/user/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

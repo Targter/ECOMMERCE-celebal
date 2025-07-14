@@ -16,12 +16,10 @@ export const addItemsToCart = createAsyncThunk(
   async ({ id, quantity }, { rejectWithValue }) => {
     try {
       // console.log("called add item to cart function", id);
-      const { data } = await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/product/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`/api/v1/product/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return {
         product: data.product._id,
         name: data.product.name,

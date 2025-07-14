@@ -46,7 +46,7 @@ const ConfirmOrder = () => {
     try {
       // Create Razorpay order
       const { data } = await axios.post(
-        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/create-order",
+        "/api/v1/create-order",
         {
           amount: totalPrice,
           cartItems: cartItems.map((item) => ({
@@ -58,7 +58,7 @@ const ConfirmOrder = () => {
           })),
           shippingInfo,
         },
-        { withCredentials: true }
+        { headers: { "Content-Type": "application/json" }, withCredentials: true }
       );
 
       if (data.success) {
@@ -93,9 +93,9 @@ const ConfirmOrder = () => {
             console.log("Request body for /verify-payment:", requestBody);
             try {
               const verification = await axios.post(
-                "https://ecommerce-celebal-z4l7.vercel.app/api/v1/verify-payment",
+                "/api/v1/verify-payment",
                 requestBody,
-                { withCredentials: true }
+                { headers: { "Content-Type": "application/json" }, withCredentials: true }
               );
 
               if (verification.data.success) {

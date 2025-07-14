@@ -21,11 +21,7 @@ export const createOrder = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       };
-      const { data } = await axios.post(
-        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/order/new",
-        order,
-        config
-      );
+      const { data } = await axios.post("/api/v1/order/new", order, config);
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -39,12 +35,10 @@ export const myOrders = createAsyncThunk(
   "order/myOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/orders/me",
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get("/api/v1/orders/me", {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       console.log("data::", data);
       return data.orders;
     } catch (error) {
@@ -59,12 +53,10 @@ export const getAllOrders = createAsyncThunk(
   "order/getAllOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/orders",
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get("/api/v1/admin/orders", {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return data.orders;
     } catch (error) {
       return rejectWithValue(
@@ -83,7 +75,7 @@ export const updateOrder = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.put(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/order/${id}`,
+        `/api/v1/admin/order/${id}`,
         order,
         config
       );
@@ -102,12 +94,10 @@ export const deleteOrder = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       console.log("delete order called... ", id);
-      const { data } = await axios.delete(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/admin/order/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.delete(`/api/v1/admin/order/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return data.success;
     } catch (error) {
       return rejectWithValue(
@@ -121,12 +111,10 @@ export const getOrderDetails = createAsyncThunk(
   "order/getOrderDetails",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-celebal-z4l7.vercel.app/api/v1/order/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`/api/v1/order/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       return data.order;
     } catch (error) {
       return rejectWithValue(
