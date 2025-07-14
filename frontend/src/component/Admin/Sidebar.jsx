@@ -51,7 +51,7 @@ const Sidebar = () => {
       <div
         className={`fixed  md:sticky top-0 left-0 transform ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 z-30 transition-transform duration-200 ease-in-out h-screen w-54 bg-white border-r flex flex-col`}
+        } md:translate-x-0 z-30 transition-transform duration-200 ease-in-out h-auto w-54 bg-white border-r flex flex-col`}
       >
         {/* Logo */}
 
@@ -107,7 +107,7 @@ const Sidebar = () => {
                       <span>All Products</span>
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       // to="/admin/product/new"
                       className={`flex items-center p-2 rounded-lg transition-colors ${isActive(
@@ -117,7 +117,7 @@ const Sidebar = () => {
                       <FiPlusCircle className="mr-3 text-sm flex-shrink-0" />
                       <span>Create Product</span>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </li>
@@ -175,20 +175,6 @@ const Sidebar = () => {
             </li>
           </ul>
         </nav>
-
-        {/* Bottom Section */}
-        <div className="p-4 border-t">
-          <button
-            onClick={() => {
-              // Add logout logic here
-              console.log("Logging out...");
-            }}
-            className="flex items-center w-full p-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <FiLogOut className="mr-3 flex-shrink-0" size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
       </div>
 
       {/* Overlay for mobile */}
