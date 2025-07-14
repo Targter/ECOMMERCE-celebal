@@ -4,17 +4,23 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.cookies;
-  // console.log("tokeN", token);
-  if (!token) {
-    return next(new ErrorHander("Please Login to access this resource", 401));
+  // Get token from Authorization header
+  const authHeader = req.headers.authorization;
+  console.log("authHeader:", authHeader);
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new ErrorHander("Please provide a valid token", 401));
   }
 
-  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+  const token = authHeader.split(" ")[1];
+  console.log("tokeN:", token);
 
-  req.user = await User.findById(decodedData.id);
-  // console.log("userrrrrrrrrrrrrrrrr:", req.user._id);
-  next();
+  try {
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decodedData.id);
+    next();
+  } catch (error) {
+    return next(new ErrorHander("Invalid or expired token", 401));
+  }
 });
 
 exports.authorizeRoles = (...roles) => {

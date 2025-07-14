@@ -1,6 +1,7 @@
 // src/features/product/productSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+
+import axios from "../../../api/axios";
 
 // Initial state
 const initialState = {

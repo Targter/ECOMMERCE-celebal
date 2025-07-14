@@ -2,7 +2,8 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../../api/axios";
 import {
   createOrder,
   clearErrors,

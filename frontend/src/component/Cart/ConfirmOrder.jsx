@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../../api/axios";
 import { toast } from "react-toastify";
 import MetaData from "../layout/MetaData";
 import CheckoutSteps from "./CheckoutSteps";
@@ -58,7 +59,10 @@ const ConfirmOrder = () => {
           })),
           shippingInfo,
         },
-        { headers: { "Content-Type": "application/json" }, withCredentials: true }
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
 
       if (data.success) {
@@ -95,7 +99,10 @@ const ConfirmOrder = () => {
               const verification = await axios.post(
                 "/api/v1/verify-payment",
                 requestBody,
-                { headers: { "Content-Type": "application/json" }, withCredentials: true }
+                {
+                  headers: { "Content-Type": "application/json" },
+                  withCredentials: true,
+                }
               );
 
               if (verification.data.success) {
