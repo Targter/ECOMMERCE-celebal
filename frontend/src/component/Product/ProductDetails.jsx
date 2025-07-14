@@ -15,27 +15,27 @@ import MetaData from "../layout/MetaData.jsx";
 import Products from "./Products.jsx";
 import Breadcrumbs from "../Breadcrumbs.jsx";
 import { Link } from "react-router-dom";
+
 const ProductsOnSale = ({ relatedProducts }) => {
-  console.log("relatedProducts:", relatedProducts);
   return (
-    <div>
-      <h3 className="font-sans text-xl font-semibold mb-6 underline underline-offset-4 decoration-1">
-        Products on Sale
+    <div className="mb-6">
+      <h3 className="font-sans text-lg sm:text-xl font-semibold mb-3 sm:mb-4 underline underline-offset-4 decoration-1">
+        You Might Also Like
       </h3>
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         {relatedProducts?.map((item) => (
-          <Link to={`/product/${item._id}`} key={item._id}>
-            <div className="flex items-center gap-4 border-b border-gray-300 py-2">
-              <div>
+          <Link to={`/product/${item._id}`} key={item._id} className="group">
+            <div className="flex flex-col items-center border border-gray-200 rounded-lg p-2 sm:p-3 group-hover:shadow-md transition-shadow">
+              <div className="mb-2">
                 <img
-                  className="w-24 h-24 object-cover"
+                  className="w-full h-24 sm:h-32 object-contain"
                   src={item.images?.[0]?.url || "/images/default-product.png"}
                   alt={item.name}
                 />
               </div>
-              <div className="flex flex-col gap-2 font-sans">
-                <p className="text-base font-medium">{item.name}</p>
-                <p className="text-sm font-semibold">
+              <div className="text-center">
+                <p className="text-xs sm:text-sm font-medium line-clamp-1">{item.name}</p>
+                <p className="text-xs sm:text-sm font-semibold text-red-500 mt-1">
                   ₹{item.price.toLocaleString()}
                 </p>
               </div>
@@ -64,36 +64,35 @@ const ProductInfo = ({
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <h2 className="text-4xl font-semibold font-sans">{product.name}</h2>
-      <p className="text-xl font-semibold text-red-500">
+    <div className="flex flex-col gap-2 sm:gap-3 md:gap-4">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold font-sans">
+        {product.name}
+      </h2>
+      <p className="text-lg font-semibold text-red-500">
         ₹{product.price.toLocaleString()}
       </p>
       <div className="flex items-center">
         {[...Array(5)].map((_, i) =>
           i < Math.floor(product.ratings) ? (
-            <FaStar key={i} className="text-yellow-400" />
+            <FaStar key={i} className="text-yellow-400 text-sm" />
           ) : i < Math.ceil(product.ratings) && product.ratings % 1 >= 0.5 ? (
-            <FaStarHalfAlt key={i} className="text-yellow-400" />
+            <FaStarHalfAlt key={i} className="text-yellow-400 text-sm" />
           ) : (
-            <FaRegStar key={i} className="text-yellow-400" />
+            <FaRegStar key={i} className="text-yellow-400 text-sm" />
           )
         )}
-        <span className="ml-2 text-gray-500">
+        <span className="ml-2 text-gray-500 text-sm">
           ({product.numOfReviews} Reviews)
         </span>
       </div>
-      <p className="text-base text-gray-600">{product.description}</p>
-      <p className="text-sm">
-        {product.numOfReviews === 0
-          ? "Be the first to leave a review."
-          : "Leave a review."}
+      <p className="text-sm text-gray-600 line-clamp-3 sm:line-clamp-4">
+        {product.description}
       </p>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center border rounded-md">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+        <div className="flex items-center border rounded-md w-full sm:w-auto">
           <button
             onClick={() => adjustQuantity(-1)}
-            className="px-3 py-2 text-gray-700 hover:bg-gray-100"
+            className="px-2 sm:px-3 py-1 sm:py-2 text-gray-700 hover:bg-gray-100"
             aria-label="Decrease quantity"
           >
             -
@@ -102,12 +101,12 @@ const ProductInfo = ({
             type="number"
             value={quantity}
             readOnly
-            className="w-16 text-center border-none focus:outline-none"
+            className="w-10 sm:w-12 text-center border-none focus:outline-none"
             aria-label="Quantity"
           />
           <button
             onClick={() => adjustQuantity(1)}
-            className="px-3 py-2 text-gray-700 hover:bg-gray-100"
+            className="px-2 sm:px-3 py-1 sm:py-2 text-gray-700 hover:bg-gray-100"
             aria-label="Increase quantity"
           >
             +
@@ -116,7 +115,7 @@ const ProductInfo = ({
         <button
           onClick={addToCartHandler}
           disabled={product.Stock < 1}
-          className={`w-full py-4 rounded-md text-white font-medium font-sans ${
+          className={`w-full py-2 sm:py-3 rounded-md text-white font-medium font-sans ${
             product.Stock < 1
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-red-500 hover:bg-red-600"
@@ -127,12 +126,12 @@ const ProductInfo = ({
       </div>
       <button
         onClick={submitReviewToggle}
-        className="w-full py-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-sans"
+        className="w-full py-2 sm:py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 font-sans text-sm sm:text-base"
       >
         Submit Review
       </button>
-      <p className="text-sm font-normal">
-        <span className="text-base font-medium">Status:</span>{" "}
+      <p className="text-xs sm:text-sm font-normal">
+        <span className="font-medium">Status:</span>{" "}
         <span className={product.Stock < 1 ? "text-red-500" : "text-green-500"}>
           {product.Stock < 1 ? "Out of Stock" : "In Stock"}
         </span>
@@ -161,7 +160,6 @@ const ProductDetails = () => {
     if (id) {
       dispatch(getProductDetails(id));
     }
-    // Set prevLocation only when location changes
     setPrevLocation(location.pathname);
   }, [dispatch, id, error, reviewError]);
 
@@ -184,49 +182,50 @@ const ProductDetails = () => {
   if (loading) return <Loader />;
   if (!product)
     return (
-      <div className="text-center text-gray-600 text-xl">Product not found</div>
+      <div className="text-center text-gray-600 text-lg py-10">Product not found</div>
     );
 
-  // Mock related products for the ProductsOnSale component
   const relatedProducts = products?.slice(0, 3) || [];
 
   return (
     <>
       <MetaData title={`${product.name} | ECOMMERCE`} />
-      <div className="w-full mx-auto border-b border-gray-300 ">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="xl:-mt-10 -mt-7">
+      <div className="w-full mx-auto border-b border-gray-300">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
+          <div className="xl:-mt-8 -mt-5">
             <Breadcrumbs title="" prevLocation={prevLocation} />
           </div>
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 h-full -mt-5 xl:-mt-8 pb-10 bg-gray-100 p-4">
-            <div className="h-full">
-              <ProductsOnSale relatedProducts={relatedProducts} />
-            </div>
-            <div className="h-full xl:col-span-2">
-              <img
-                className="w-full h-full object-cover rounded-lg"
-                src={
-                  product.images?.[currentImage]?.url ||
-                  "/images/default-product.png"
-                }
-                alt={product.name}
-              />
-              <div className="flex mt-4 space-x-2 overflow-x-auto">
-                {product.images?.map((item, i) => (
-                  <img
-                    key={i}
-                    src={item.url || "/images/default-product.png"}
-                    alt={`${product.name} - Thumbnail ${i + 1}`}
-                    className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
-                      currentImage === i ? "border-red-500" : "border-gray-200"
-                    } hover:border-red-500 transition-all duration-200`}
-                    onClick={() => setCurrentImage(i)}
-                    loading="lazy"
-                  />
-                ))}
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 h-full -mt-3 xl:-mt-6 pb-8 bg-gray-100 p-3 sm:p-4">
+            <div className="md:col-span-1">
+              <div className="sticky top-3 sm:top-4">
+                <img
+                  className="w-full h-auto max-h-80 sm:max-h-96 object-contain rounded-lg bg-white p-4"
+                  src={
+                    product.images?.[currentImage]?.url ||
+                    "/images/default-product.png"
+                  }
+                  alt={product.name}
+                />
+                <div className="flex mt-3 space-x-2 overflow-x-auto pb-1">
+                  {product.images?.map((item, i) => (
+                    <img
+                      key={i}
+                      src={item.url || "/images/default-product.png"}
+                      alt={`${product.name} - Thumbnail ${i + 1}`}
+                      className={`w-12 h-12 sm:w-14 sm:h-14 object-cover rounded cursor-pointer border-2 ${
+                        currentImage === i
+                          ? "border-red-500"
+                          : "border-gray-200"
+                      } hover:border-red-500 transition-all duration-200`}
+                      onClick={() => setCurrentImage(i)}
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="h-full w-full md:col-span-2 xl:col-span-3 xl:p-14 flex flex-col gap-6 justify-center">
+            
+            <div className="md:col-span-1 p-2 sm:p-4">
               <ProductInfo
                 product={product}
                 quantity={quantity}
@@ -236,25 +235,32 @@ const ProductDetails = () => {
               />
             </div>
           </div>
-          <div className="mt-12 w-full pt-10 pb-10">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 font-sans">
-              Reviews
+          
+          {/* Products on Sale section moved here */}
+          <div className="px-3 sm:px-4 md:px-6 pb-8">
+            <ProductsOnSale relatedProducts={relatedProducts} />
+          </div>
+          
+          <div className="mt-2 w-full pt-4 sm:pt-6 pb-8 px-3 sm:px-4 md:px-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 font-sans">
+              Customer Reviews
             </h3>
             {product.reviews?.length > 0 ? (
-              <div className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+              <div className="flex space-x-3 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-hide">
                 {product.reviews.map((review) => (
                   <div
                     key={review._id}
-                    className="flex-shrink-0 w-80 snap-start"
+                    className="flex-shrink-0 w-56 sm:w-64 snap-start"
                   >
                     <ReviewCard review={review} />
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-center">No Reviews Yet</p>
+              <p className="text-gray-500 text-center py-4">No Reviews Yet</p>
             )}
           </div>
+          
           <ReviewDialog
             open={open}
             onClose={submitReviewToggle}

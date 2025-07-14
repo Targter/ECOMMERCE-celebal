@@ -1,85 +1,120 @@
-// add to cart pending.....
-
-import React from "react";
-import { BsSuitHeartFill } from "react-icons/bs";
-import { GiReturnArrow } from "react-icons/gi";
-import { FaShoppingCart } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaShoppingCart, FaSpinner } from "react-icons/fa";
 import { MdOutlineLabelImportant } from "react-icons/md";
+import { toast } from "react-toastify";
 import Image from "../../../designLayouts/Image";
 import Badge from "./Badge";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addItemsToCart } from "../../../../reducers/store/slice/cartSlice";
-import { Imageee } from "../../../../assets/images";
 
 const Product = (props) => {
   const dispatch = useDispatch();
-  const _id = props.productName;
-  //   console.log("productId:", props._id);
-  const idString = (_id) => {
-    return String(_id).toLowerCase().split(" ").join("");
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleAddToCart = async () => {
+    setIsAddingToCart(true);
+    try {
+      await dispatch(
+        addItemsToCart({
+          id: props._id,
+          quantity: 1,
+          name: props.productName,
+          price: props.price,
+          image: props.img,
+        })
+      ).unwrap();
+
+      toast.success(`${props.productName} added to cart!`, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+    } catch (error) {
+      toast.error(error.message || "Failed to add item to cart", {
+        position: "bottom-right",
+      });
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
-  const handleAddToCart = () => {
-    dispatch(addItemsToCart({ id: props._id, quantity: 1 }))
-      .unwrap()
-      .then(() => {
-        toast.success(`${props.productName} added to cart!`);
-      })
-      .catch((error) => {
-        toast.error(error || "Failed to add item to cart");
-      });
-  };
   return (
-    <div className="w-full relative group">
-      <div className="max-w-80 max-h-80 relative overflow-y-hidden  ">
-        <div>
-          <Image className="w-[80%] h-full" imgSrc={Imageee} />
+    <div
+      className="w-full relative group border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative overflow-hidden">
+        <div className="aspect-square flex items-center justify-center bg-gray-50">
+          <Image
+            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+            imgSrc={props.img || "/default-product-image.png"}
+            alt={props.productName}
+          />
         </div>
-        <div className="absolute top-6 left-8">
-          {props.badge && <Badge text="New" />}
-        </div>
-        <div className="w-full h-auto absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700">
-          <ul className="w-full h-auto flex flex-col items-end justify-center gap-2 font-titleFont px-2 border-l border-r">
-            <li
+
+        {props.badge && (
+          <div className="absolute top-3 left-3">
+            <Badge text="New" />
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-white transition-all duration-300 ${
+            isHovered ? "translate-y-0" : "translate-y-full"
+          }`}
+        >
+          <div className="flex flex-col p-2">
+            <button
               onClick={handleAddToCart}
-              className="text-[#767676] hover:text-primeColor text-sm font-normal border-b-[1px] border-b-gray-200 hover:border-b-primeColor flex items-center justify-end gap-2 hover:cursor-pointer pb-1 duration-300 w-full"
+              disabled={isAddingToCart}
+              className={`flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium rounded-md mb-2 transition-colors ${
+                isAddingToCart
+                  ? "bg-gray-200 text-gray-600"
+                  : "bg-black text-white hover:bg-gray-800"
+              }`}
             >
-              Add to Cart
-              <span>
-                <FaShoppingCart />
-              </span>
-            </li>
-            <Link to={`/product/${props._id}`}>
-              <li
-                // onClick={handleProductDetails}
-                className="text-[#767676] hover:text-primeColor text-sm font-normal border-b-[1px] border-b-gray-200 hover:border-b-primeColor flex items-center justify-end gap-2 hover:cursor-pointer pb-1 duration-300 w-full"
-              >
-                View Details
-                <span className="text-lg">
-                  <MdOutlineLabelImportant />
-                </span>
-              </li>
+              {isAddingToCart ? (
+                <>
+                  <FaSpinner className="animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                <>
+                  Add to Cart
+                  <FaShoppingCart />
+                </>
+              )}
+            </button>
+
+            <Link
+              to={`/product/${props._id}`}
+              className="flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-700 hover:text-black border border-gray-300 rounded-md hover:border-black transition-colors"
+            >
+              View Details
+              <MdOutlineLabelImportant />
             </Link>
-            {/* <li className="text-[#767676] hover:text-primeColor text-sm font-normal border-b-[1px] border-b-gray-200 hover:border-b-primeColor flex items-center justify-end gap-2 hover:cursor-pointer pb-1 duration-300 w-full">
-              Add to Wish List
-              <span>
-                <BsSuitHeartFill />
-              </span>
-            </li> */}
-          </ul>
+          </div>
         </div>
       </div>
-      <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] border-transparent border-t-0 px-4">
-        <div className="flex items-center justify-between font-titleFont">
-          <h2 className="text-lg text-primeColor font-bold">
+
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-md font-semibold text-gray-900 truncate">
             {props.productName}
-          </h2>
-          <p className="text-[#767676] text-[14px]">₹{props.price}</p>
+          </h3>
+          <p className="text-lg font-bold text-gray-900">₹{props.price}</p>
         </div>
-        <div>
-          <p className="text-[#767676] text-[14px]">{props.color}</p>
-        </div>
+        <p className="text-sm text-gray-500">{props.color}</p>
+
+        {props.stock <= 10 && (
+          <p className="text-xs text-orange-500 mt-1">
+            Only {props.stock} left in stock!
+          </p>
+        )}
       </div>
     </div>
   );

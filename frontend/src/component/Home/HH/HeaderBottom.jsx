@@ -1,151 +1,131 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import { HiOutlineMenuAlt4 } from "react-icons/hi";
-import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaSearch, FaShoppingCart, FaTimes } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getProduct } from "../../../reducers/store/slice/productSlice";
-import { logout } from "../../../reducers/store/slice/userSlice";
+import { debounce } from "lodash";
 
 const HeaderBottom = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products } = useSelector((state) => state.product);
-  const { isAuthenticated, user } = useSelector((state) => state.user);
-  const [show, setShow] = useState(false);
-  const [showUser, setShowUser] = useState(false);
+  const { products = [], loading } = useSelector((state) => state.product);
+  const { cartItems } = useSelector((state) => state.cart);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const userDropdownRef = useRef();
-  const categoryDropdownRef = useRef();
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchRef = useRef();
 
-  // Handle click outside for dropdowns
+  // Debounced search function
+  const debouncedSearch = debounce((query) => {
+    if (query) {
+      dispatch(getProduct({ keyword: query, currentPage: 1 }));
+    }
+  }, 500);
+
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target)
-      ) {
-        setShow(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Debounce search function
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchQuery) {
-        dispatch(getProduct({ keyword: searchQuery, currentPage: 1 }));
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
+    debouncedSearch(searchQuery);
+    return () => debouncedSearch.cancel();
   }, [searchQuery, dispatch]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    setShowUser(false);
-    navigate("/");
-  };
+  const totalCartItems = cartItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
 
   return (
-    <div className="w-full bg-[#F5F5F3] relative">
+    <div className="w-full bg-[#F5F5F3] relative border-b border-gray-200">
       <div className="max-w-container mx-auto">
-        <Flex className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full px-4 pb-4 lg:pb-0">
-          {/* Category Dropdown */}
+        <Flex className="sm:flex items-center justify-between w-full px-4 py-3 gap-4">
+          {/* Search Bar - Takes remaining space */}
           <div
-            // onClick={() => setShow(!show)}
-            // ref={categoryDropdownRef}
-            className="flex h-14 cursor-pointer items-center gap-2 text-primeColor"
+            ref={searchRef}
+            className="flex-1 max-w-2xl h-10 bg-white flex items-center rounded-lg border border-gray-300 focus-within:border-primeColor transition-all"
           >
-            {/* <HiOutlineMenuAlt4 className="w-5 h-5" /> */}
-            {/* <p className="text-[14px] font-normal">Shop by Category</p> */}
-
-            {show && (
-              <motion.ul
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="absolute top-11 z-50 bg-white w-auto h-auto p-4 pb-6 shadow-lg rounded-md"
-              >
-                <li className="text-gray-700 px-4 py-1 border-b-[1px] border-b-gray-200 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Accessories
-                </li>
-                <li className="text-gray-700 px-4 py-1 border-b-[1px] border-b-gray-200 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Furniture
-                </li>
-                <li className="text-gray-700 px-4 py-1 border-b-[1px] border-b-gray-200 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Electronics
-                </li>
-                <li className="text-gray-700 px-4 py-1 border-b-[1px] border-b-gray-200 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Clothes
-                </li>
-                <li className="text-gray-700 px-4 py-1 border-b-[1px] border-b-gray-200 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Bags
-                </li>
-                <li className="text-gray-700 px-4 py-1 hover:bg-gray-100 duration-300 cursor-pointer">
-                  Home appliances
-                </li>
-              </motion.ul>
-            )}
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative w-full lg:w-[600px] h-[40px] text-base text-primeColor bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
             <input
-              className="flex-1 outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
+              className="flex-1 h-full outline-none px-4 text-sm placeholder:text-gray-400 placeholder:text-[13px] md:placeholder:text-[14px]"
               type="text"
               onChange={(e) => setSearchQuery(e.target.value)}
               value={searchQuery}
-              placeholder="Search your products here"
+              placeholder="Search products..."
+              onFocus={() => setIsSearchFocused(true)}
             />
-            <FaSearch className="w-4 h-4" />
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="px-3 text-gray-400 hover:text-gray-600"
+              >
+                <FaTimes className="w-4 h-4" />
+              </button>
+            ) : (
+              <FaSearch className="w-4 h-4 mx-3 text-gray-400" />
+            )}
 
             {/* Search Results Dropdown */}
-            {searchQuery && products && products.length > 0 && (
-              <div className="w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer">
-                {products.map((product) => (
-                  <div
-                    onClick={() => {
-                      navigate(`/product/${product._id}`, {
-                        state: { item: product },
-                      });
-                      setSearchQuery("");
-                    }}
-                    key={product._id}
-                    className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3 hover:bg-gray-200"
-                  >
-                    <img
-                      className="w-24 h-24 object-contain"
-                      src={product.images[0]?.url}
-                      alt={product.name}
-                    />
-                    <div className="flex flex-col gap-1">
-                      <p className="font-semibold text-lg">{product.name}</p>
-                      <p className="text-xs">
-                        {product.description?.substring(0, 50)}...
-                      </p>
-                      <p className="text-sm">
-                        Price:{" "}
-                        <span className="text-primeColor font-semibold">
-                          ₹{product.price}
-                        </span>
-                      </p>
-                    </div>
+            {isSearchFocused && searchQuery && (
+              <div className="absolute top-12 left-4 right-4 md:left-auto md:right-auto md:w-[600px] bg-white shadow-lg rounded-b-lg z-50 max-h-96 overflow-y-auto border border-t-0">
+                {loading ? (
+                  <div className="p-4 text-center text-gray-500">
+                    Searching...
                   </div>
-                ))}
+                ) : products.length > 0 ? (
+                  products.map((product) => (
+                    <div
+                      key={product._id}
+                      onClick={() => {
+                        navigate(`/product/${product._id}`);
+                        setSearchQuery("");
+                        setIsSearchFocused(false);
+                      }}
+                      className="p-3 flex items-center gap-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer"
+                    >
+                      <img
+                        className="w-16 h-16 object-contain"
+                        src={product.images[0]?.url}
+                        alt={product.name}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-gray-500 truncate">
+                          {product.description?.substring(0, 60)}...
+                        </p>
+                        <p className="text-sm font-semibold text-primeColor">
+                          ₹{product.price.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No products found
+                  </div>
+                )}
               </div>
             )}
           </div>
 
-          {/* User and Cart Icons */}
-          <div className="flex gap-4 mt-2 lg:mt-0 items-center pr-6 relative">
-            <Link to="/orders" className="relative">
-              <span className="px-3 py-1 rounded-md bg-primeColor text-white text-sm font-medium hover:bg-opacity-90 bg-black transition hover:scale-200 hover:text-black hover:bg-white ">
-                Orders
-              </span>
+          {/* Right side icons - fixed width */}
+          <div className="flex items-center gap-4 ml-4">
+            <Link
+              to="/orders"
+              className="text-sm font-medium text-gray-700 hover:text-primeColor whitespace-nowrap"
+            >
+              My Orders
+            </Link>
+
+            <Link
+              to="/cart"
+              className="relative flex items-center p-2 text-gray-700 hover:text-primeColor"
+            >
+              <FaShoppingCart className="w-5 h-5" />
+              {totalCartItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primeColor text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalCartItems}
+                </span>
+              )}
             </Link>
           </div>
         </Flex>

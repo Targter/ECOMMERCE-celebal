@@ -37,13 +37,13 @@ export const myOrders = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     try {
       // Debugging: Check if credentials are available
-      console.log("called..orderes:", localStorage.getItem("token"));
+      // console.log("called..orderes:", localStorage.getItem("token"));
       // console.log("getState:", getState());
       const { data } = await axios.get("/api/v1/orders/me", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
-      console.log("Orders data:", data);
+      // console.log("Orders data:", data);
       return data.orders;
     } catch (error) {
       // Enhanced error logging

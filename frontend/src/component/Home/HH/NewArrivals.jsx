@@ -55,6 +55,7 @@ const NewArrivals = () => {
     }
   }, [products]);
 
+  console.log("New Arrivals products:", newArrivals);
   return (
     <div className="w-full pb-16">
       <div className="text-3xl font-semibold pb-6">New Arrivals</div>
@@ -67,7 +68,7 @@ const NewArrivals = () => {
             <div key={product._id} className="px-2">
               <Product
                 _id={product._id}
-                img={product.images[0].url} // Assuming images array exists
+                img={product.images[0].url} 
                 productName={product.name}
                 price={product.price}
                 color={product.color || "Mixed"}
