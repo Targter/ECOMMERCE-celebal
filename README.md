@@ -10,7 +10,7 @@
 
 🛍️ A modern, full-featured e-commerce platform built with **React**, **Node.js**, **Express**, and **MongoDB**, offering a seamless shopping experience with secure payments via **Razorpay**.
 
-[🚀 Live Demo](https://buy-me.vercel.app/) • [📚 GitHub Repository](https://github.com/Targter/ECOMMERCE-celebal.git) • [🐛 Report Bug](https://github.com/Targter/ECOMMERCE-celebal/issues)
+[🚀 Live Demo](https://buyme.abhaybansal.site/) • [📚 GitHub Repository](https://github.com/Targter/ECOMMERCE-celebal.git) • [🐛 Report Bug](https://github.com/Targter/ECOMMERCE-celebal/issues)
 
 <img src="public/screenshot.png" alt="Buy Me Homepage" width="700"/>
 
