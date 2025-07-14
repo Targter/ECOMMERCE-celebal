@@ -12,7 +12,7 @@
 
 [🚀 Live Demo](https://buyme.abhaybansal.site/) • [📚 GitHub Repository](https://github.com/Targter/ECOMMERCE-celebal.git) • [🐛 Report Bug](https://github.com/Targter/ECOMMERCE-celebal/issues)
 
-<img src="public/screenshot.png" alt="Buy Me Homepage" width="700"/>
+<img src="https://github.com/Targter/ECOMMERCE-celebal/blob/75f701958a07c31664954b38f2d36088a3c6916e/frontend/public/Imagess/Home2.png" alt="Buy Me Homepage" width="700"/>
 
 </div>
 
