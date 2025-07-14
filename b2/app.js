@@ -19,8 +19,8 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(fileUpload());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
-    credentials: true, // Required for cookies
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -29,7 +29,7 @@ app.use(express.json({ limit: "50mb" })); // Increase JSON limit
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // Route Imports
 const product = require("./routes/productRoute");
-const user = require("./routes/userRoute"); 
+const user = require("./routes/userRoute");
 const order = require("./routes/orderRoute");
 const payment = require("./routes/paymentRoute");
 
