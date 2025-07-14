@@ -79,6 +79,7 @@ const LoginSignUp = () => {
     }
     setLoginErrors({});
     dispatch(login({ email: loginEmail, password: loginPassword }));
+    // navigate(`/}`);
   };
 
   const registerSubmit = (e) => {

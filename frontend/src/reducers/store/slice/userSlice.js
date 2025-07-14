@@ -18,6 +18,12 @@ export const login = createAsyncThunk(
         { email, password },
         config
       );
+      if (data.success) {
+        console.log("Login successful:", data);
+        localStorage.setItem("token", data.token); // Store token
+        // toast.success("Login successful!");
+        // navigate("/");
+      }
       return data.user;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -35,6 +41,12 @@ export const register = createAsyncThunk(
         withCredentials: true,
       };
       const { data } = await axios.post(`/api/v1/register`, userData, config);
+      if (data.success) {
+        console.log("Login successful:", data);
+        localStorage.setItem("token", data.token); // Store token
+        // toast.success("Login successful!");
+        // navigate("/");
+      }
       return data.user;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -69,6 +81,7 @@ export const logout = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+      localStorage.removeItem("token"); // Clear token on logout
       return null;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
