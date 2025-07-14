@@ -33,17 +33,37 @@ export const createOrder = createAsyncThunk(
 
 export const myOrders = createAsyncThunk(
   "order/myOrders",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
-      const { data } = await axios.get("/api/v1/orders/me", {
-        headers: { "Content-Type": "application/json" },
+      // Debugging: Check if credentials are available
+      console.log("Attempting to fetch orders with credentials:", {
         withCredentials: true,
       });
-      console.log("data::", data);
+
+      const { data } = await axios.get("/api/v1/orders/me", {
+        headers: {
+          "Content-Type": "application/json",
+          // Add authorization header if using tokens
+          // "Authorization": `Bearer ${getState().auth.userToken}`
+        },
+        withCredentials: true, // Crucial for cookie-based auth
+      });
+
+      console.log("Orders data:", data);
       return data.orders;
     } catch (error) {
+      // Enhanced error logging
+      console.error("Order fetch error:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config,
+        isAxiosError: error.isAxiosError,
+      });
+
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user orders"
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch user orders"
       );
     }
   }
