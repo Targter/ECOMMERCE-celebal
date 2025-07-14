@@ -37,17 +37,10 @@ export const myOrders = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     try {
       // Debugging: Check if credentials are available
-      console.log("Attempting to fetch orders with credentials:", {
-        withCredentials: true,
-      });
-
+      console.log("called..orderes:", localStorage.getItem("token"));
+      // console.log("getState:", getState());
       const { data } = await axios.get("/api/v1/orders/me", {
-        headers: {
-          "Content-Type": "application/json",
-          // Add authorization header if using tokens
-          // "Authorization": `Bearer ${getState().auth.userToken}`
-        },
-        withCredentials: true, // Crucial for cookie-based auth
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
       console.log("Orders data:", data);
